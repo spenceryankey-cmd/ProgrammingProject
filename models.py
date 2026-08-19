@@ -1,7 +1,7 @@
 # models.py
 
 class MenuItem:
-    """Base class representing a generic cafeteria menu item."""
+    """Base class representing a cafeteria menu item."""
     def __init__(self, item_id, name, price, category="General", calories=0.0, protein=0.0, allergens=None):
         self.item_id = item_id
         self.name = name
@@ -12,7 +12,7 @@ class MenuItem:
         self.allergens = allergens if allergens is not None else []
 
     def is_available_now(self, current_time="12:00", current_day="Monday"):
-        """Default availability check; can be overridden by subclasses."""
+        """Checking availability"""
         return True
 
     def to_dict(self):
@@ -29,7 +29,7 @@ class MenuItem:
 
 
 class Entree(MenuItem):
-    """Subclass for main meals with meal-period restrictions (e.g., Breakfast vs. Lunch)."""
+    """Subclass for main meals with meal-period restrictions"""
     def __init__(self, item_id, name, price, meal_period="Lunch", **kwargs):
         super().__init__(item_id, name, price, category="Entree", **kwargs)
         self.meal_period = meal_period
@@ -50,7 +50,7 @@ class Beverage(MenuItem):
 
 
 class Snack(MenuItem):
-    """Subclass for snacks with specific day restrictions (e.g., Kelewele days)."""
+    """Subclass for snacks with specific day restrictions (e.g., Kelewele days)"""
     def __init__(self, item_id, name, price, restricted_days=None, **kwargs):
         super().__init__(item_id, name, price, category="Snack", **kwargs)
         self.restricted_days = restricted_days if restricted_days else []
