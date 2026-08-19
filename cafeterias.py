@@ -5,10 +5,12 @@ import os
 from models import Cafeteria, Entree, Beverage, Snack
 from nutrition_api import get_nutrition_data
 
-def load_all_cafeterias(json_path="data/cafeteria_menus.json"):
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+_DEFAULT_JSON_PATH = os.path.join(_BASE_DIR, "data", "cafeteria_menus.json")
+
+def load_all_cafeterias(json_path=_DEFAULT_JSON_PATH):
     """
-    Loads all cafeterias and their menu items from the JSON file,
-    enriching each item with nutrition data from the API/cache.
+    Loads all cafeterias and their menu items from the JSON file
     """
     if not os.path.exists(json_path):
         return {}
@@ -31,20 +33,17 @@ def load_all_cafeterias(json_path="data/cafeteria_menus.json"):
             price = item_data["price"]
             category = item_data.get("category", "General")
             
-            # Fetch nutrition data (hits local cache automatically)
             nutrition = get_nutrition_data(name)
             
             kwargs = {
                 "item_id": item_id,
                 "name": name,
                 "price": price,
-                "category": category,
                 "calories": nutrition["calories"],
                 "protein": nutrition["protein"],
                 "allergens": nutrition["allergens"]
             }
 
-            # Instantiate polymorphic subclasses based on category
             if category == "Entree":
                 meal_period = item_data.get("meal_period", "Lunch")
                 item = Entree(meal_period=meal_period, **kwargs)
@@ -63,7 +62,7 @@ def load_all_cafeterias(json_path="data/cafeteria_menus.json"):
 
     return cafeterias_dict
 
-# Global registry of all loaded cafeterias
+
 ALL_CAFES = load_all_cafeterias()
 
 def get_menu(cafeteria_name, date="Monday"):
